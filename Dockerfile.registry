@@ -1,0 +1,5 @@
+FROM openjdk:17
+WORKDIR /app
+COPY ./target/classes /app/classes
+EXPOSE 8080
+CMD ["java", "-classpath", "/app/classes", "demo.controller.RegistryController"]

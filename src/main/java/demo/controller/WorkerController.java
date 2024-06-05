@@ -33,7 +33,7 @@ public class WorkerController {
             this.self = new Worker(hostname);
             RestClient restClient = RestClient.create();
             restClient.post()
-                    .uri("http://registery:8081/workers")
+                    .uri("http://registry:8081/registry/")
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(this.self).retrieve();
         }
@@ -49,7 +49,7 @@ public class WorkerController {
         System.out.println("Envoi du worker...");
         try {
             RestTemplate restTemplate = new RestTemplate();
-            String url = "http://registery:8081/register";
+            String url = "http://registry:8081/register";
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
