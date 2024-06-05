@@ -6,6 +6,8 @@ import java.util.List;
 
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +15,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.client.RestClient;
+import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -43,12 +46,23 @@ public class WorkerController {
 
     @Scheduled(fixedDelay = 5000)
     public ResponseEntity<String> isAvailable() {
-        RestClient restClient = RestClient.create();
+        System.out.println("Envoi du worker...");
+        try {
+            RestTemplate restTemplate = new RestTemplate();
+            String url = "http://registery:8081/register";
 
-        String uri = "http://registery:8081/workers?worker=" + hostname;
-        String rw = restClient.post().uri(uri).retrieve().body(String.class);
-        System.out.println("Envoie de la donnée au registery");
-        return new ResponseEntity<>(rw, HttpStatus.OK);
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+
+            HttpEntity<Worker> request = new HttpEntity<>(this.self, headers);
+            ResponseEntity<String> response = restTemplate.postForEntity(url, request,
+                    String.class);
+
+            return new ResponseEntity<>(response.getStatusCode());
+        } catch (Exception e) {
+            System.out.println("Failed to register worker.");
+        }
+        return null;
     }
 
     @GetMapping("/hello1")

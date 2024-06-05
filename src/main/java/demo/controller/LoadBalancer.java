@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.client.RestClient;
 
 import java.util.List;
@@ -33,5 +35,16 @@ public class LoadBalancer {
         String rw = restClient.get().uri(uri).retrieve().body(String.class);
 
         return new ResponseEntity<>(rw, HttpStatus.OK);
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<List<Worker>> workerIsAvailable(@RequestBody List<Worker> workersRegistered) {
+        workers = workersRegistered;
+        return new ResponseEntity<>(workers, HttpStatus.OK);
+    }
+
+    @GetMapping("workers")
+    public ResponseEntity<List<Worker>> getWorkers() {
+        return new ResponseEntity<>(workers, HttpStatus.OK);
     }
 }
